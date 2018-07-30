@@ -1,4 +1,8 @@
 package com.thoughtworks.training;
+
+import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.core.io.ClassPathResource;
+
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -39,35 +43,31 @@ public class NumberProcessor {
 //        }
 
     public static void main(String[] args) throws IOException {
-//        new NumberProcessor().Processor(new Scanner(System.in).nextLine());
-        NumberProcessor processor = new NumberProcessor( new ArrayList<Processor>(){{ add(new Add()); }});
+        XmlBeanFactory beanFactory = new XmlBeanFactory(new ClassPathResource("./test.xml"));
+        NumberProcessor bean = beanFactory.getBean(NumberProcessor.class);
 
 
         DataInputStream in = new DataInputStream(new BufferedInputStream(System.in));
         String line;
-        while((line =in.readLine()).length() != 0)
-        {
-           System.out.println(processor.process(line));
+        while ((line = in.readLine()).length() != 0) {
+            System.out.println(bean.process(line));
         }
-
 
 
     }
 
-        String process(String s) {
+    String process(String s) {
         List<Integer> res = Arrays.asList(s.split(" ")).stream().map(Integer::valueOf)
                 .collect(Collectors.toList());
-            List<Integer> middleResult = new ArrayList<>();
-        for(Processor processors:this.processors)
-        {
+        List<Integer> middleResult = new ArrayList<>();
+        for (Processor processors : this.processors) {
             middleResult = processors.process(res);
             res = middleResult;
         }
 
 
-
-       List<String> result = middleResult.stream().map(String::valueOf).collect(Collectors.toList());
-            System.out.println(String.join(" ", result));
+        List<String> result = middleResult.stream().map(String::valueOf).collect(Collectors.toList());
+        System.out.println(String.join(" ", result));
         return String.join(" ", result);
     }
 
@@ -80,11 +80,12 @@ public class NumberProcessor {
 //        return String.join(" ", res);
 //    }
 
-//    private class Mapper implements Function<String, Integer> {
+    //    private class Mapper implements Function<String, Integer> {
 //        @Override
 //        public Integer apply(String s) {
 //            return Integer.valueOf(s);
 //        }
 //    }
+
 }
 
